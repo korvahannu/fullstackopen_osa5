@@ -66,5 +66,4 @@ const likeBlog = async blog => {
   return response.data;
 };
 
-/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default { getAll, setToken, create, likeBlog, deleteBlog };
