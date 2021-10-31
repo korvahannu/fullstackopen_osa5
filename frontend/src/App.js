@@ -1,26 +1,14 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 
-import ListBlog from './components/blog.js'
+import ListBlog from './components/blog.js';
 import blogServices from './services/blogs.js';
-
 import loginServices from './services/login.js';
+import Notification from './components/notifications.js';
+import { Warning } from './components/notifications.js';
+import CreateNewBlog from './components/CreateNewBlog.js';
+import Toggable from './components/Toggable';
 
-const Notification = (props) => {
-
-  if(props.text === '')
-    return null;
-
-  return (<div id="notification">{props.text}</div>);
-};
-
-const Warning = (props) => {
-
-  if(props.text === '')
-    return null;
-
-  return (<div id="warning">{props.text}</div>);
-};
 
 function App() {
 
@@ -29,10 +17,6 @@ function App() {
   const [formUsername, setFormUsername] = useState('');
   const [formPassword, setFormPassword] = useState('');
   const [user, setUser] = useState(null);
-
-  const [formTitle, setFormTitle] = useState('');
-  const [formAuthor, setFormAuthor] = useState('');
-  const [formUrl, setFormUrl] = useState('');
 
   const [notification, setNotification] = useState('');
   const [warning, setWarning] = useState('');
@@ -55,30 +39,34 @@ function App() {
   const updateBlog = () => {
 
     blogServices
-    .getAll()
-    .then( allBlogs => setBlogs(allBlogs));
-
-  }
+      .getAll()
+      .then(allBlogs => {
+        allBlogs.sort(
+          (a, b) => {return b.likes - a.likes;}
+        );
+        setBlogs(allBlogs);
+      });
+  };
 
   const notify = (message) => {
 
     setNotification(message);
 
     setTimeout(() => {
-      setNotification('')
-      }, 5000);
+      setNotification('');
+    }, 5000);
 
-  }
+  };
 
   const warn = (message) => {
 
     setWarning(message);
 
     setTimeout(() => {
-      setWarning('')
-      }, 5000);
+      setWarning('');
+    }, 5000);
 
-  }
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -88,7 +76,7 @@ function App() {
       const credentials = {
         username: formUsername,
         password: formPassword
-      }
+      };
 
       const user = await loginServices.login(credentials);
 
@@ -98,22 +86,22 @@ function App() {
       blogServices.setToken(user.token);
       window.localStorage.setItem('loggedInBlogUser', JSON.stringify(user));
     }
-    catch
+    catch (error)
     {
       warn('Invalid username or password');
     }
   };
 
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
 
     setUser(null);
     setFormPassword('');
     setFormUsername('');
-    window.localStorage.removeItem('loggedInBlogUser')
+    window.localStorage.removeItem('loggedInBlogUser');
 
     notify('Logged out successfully');
 
-  }
+  };
 
   const drawLoginPrompt = () => {
     return(
@@ -133,23 +121,19 @@ function App() {
   };
 
   const drawBlogList = () => {
+
     return(
-        <div key='drawBlogList'>
+      <div key='drawBlogList'>
 
-          <h3>List of current blogs</h3>
+        <h3>List of current blogs</h3>
 
-          <table id="ListBlogTableHead">
-          <tbody><tr><th>Title</th><th>Author</th></tr></tbody>
-          </table>
-
-          {blogs.map
-          (
-            blog =>
-            <ListBlog key={blog.id} blog={blog} />
-          )}
-        </div>
-      )
-  }
+        {blogs.map(
+          blog =>
+            <ListBlog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+        )}
+      </div>
+    );
+  };
 
   const drawLogoutForm = () => (
     <div key='drawLogoutForm'>
@@ -158,25 +142,13 @@ function App() {
         <button type="submit">Logout</button>
       </form>
     </div>
-  )
+  );
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault();
-
+  const handleCreateBlog = async (newBlog) => {
     try
     {
-      const newBlog =
-      {
-        author:formAuthor,
-        title:formTitle,
-        url:formUrl
-      };
 
       await blogServices.create(newBlog);
-
-      setFormAuthor('');
-      setFormTitle('');
-      setFormUrl('');
 
       updateBlog();
       notify(`A new blog ${newBlog.title} by ${newBlog.author} has been added.`);
@@ -186,28 +158,12 @@ function App() {
       warn('Please input valid information only');
       console.log(error);
     }
-  }; 
+  };
 
   const drawCreateNew = () => (
-    <div id="create_new_blog" key='drawCreateNew'>
-      <h2>Create new </h2>
-
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          title
-          <input type="text" name="Title" value={formTitle} onChange={({target}) => setFormTitle(target.value)} />
-        </div>
-        <div>
-          author
-          <input type="text" name="Author" value={formAuthor} onChange={({target}) => setFormAuthor(target.value)} />
-        </div>
-        <div>
-          url
-          <input type="text" name="Url" value={formUrl} onChange={({target}) => setFormUrl(target.value)} />
-        </div>
-        <button type="submit">Create</button>
-      </form>
-    </div>
+    <Toggable labelShow='Add a new blog' labelHide='Cancel' key='toggableNewBlog'>
+      <CreateNewBlog create={handleCreateBlog} key="createnewblog" />
+    </Toggable>
   );
 
   return (
@@ -220,8 +176,8 @@ function App() {
       {
 
         user === null
-        ? drawLoginPrompt()
-        : [drawCreateNew(), drawBlogList(), drawLogoutForm()]
+          ? drawLoginPrompt()
+          : [drawCreateNew(), drawBlogList(), drawLogoutForm()]
       }
 
     </div>

@@ -124,3 +124,17 @@ button
     margin-top:24px;
     text-transform:capitalize;
 }
+
+.Toggable
+{
+    padding-bottom:0px;
+}
+
+.Toggable_Button
+{
+    background-image: linear-gradient(to right, #eb0505, #fa4747);
+    padding:8px;
+    margin:12px;
+    min-width:32px;
+    font-size:0.8em;
+}

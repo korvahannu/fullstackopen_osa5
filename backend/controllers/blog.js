@@ -75,18 +75,17 @@ notesRouter.put('/:id', async (request, response) => {
     const user = request.user;
     const body = request.body;
 
-    let updatedBlog = [];
+    let updatedBlog = {};
 
     if(body.title !== undefined)
         updatedBlog.title = body.title;
     if(body.author !== undefined)
-        updatedBlog.author = body.title;
+        updatedBlog.author = body.author;
     if(body.url !== undefined)
-        updatedBlog.url = body.title;
+        updatedBlog.url = body.url;
     if(body.likes !== undefined)
-        updatedBlog.likes = body.title;
-    
-    
+        updatedBlog.likes = body.likes;
+        
     const blog = await Blog.findById(request.params.id);
 
     if(blog.user.toString() == user._id)
