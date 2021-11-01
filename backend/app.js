@@ -32,6 +32,12 @@ app.use('/api/blogs', middleware.validateTokenGetUser, blogsRouter);    // MIDDL
                                                                         // Sisältää myös middleware validateTokenGetUser, joka hakee get, post ja delete
                                                                         // routeille käyttäjän hyödyntämällä middlewarea getTokenFrom
 
+if(process.env.NODE_ENV === 'test')
+{
+    const testRouter = require('./controllers/test');
+    app.use('/api/testing', testRouter);
+}
+
 app.use(middleware.unknownEndpoint);                    // MIDDLEWARE, joka käsittelee jos pyyntö on kohdistunut tuntemattomaan osoitteeseen
 app.use(middleware.errorHandler);                       // MIDDLEWARE, joka käsittelee virheitä
 

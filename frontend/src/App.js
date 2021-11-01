@@ -116,12 +116,12 @@ function App() {
         <h2>Please login to view posts:</h2>
         <form onSubmit={handleLogin}>
           <div>
-            username <input type="text" name="Username" value={formUsername} onChange={({ target }) => setFormUsername(target.value)}/>
+            username <input id="loginUsername" type="text" name="Username" value={formUsername} onChange={({ target }) => setFormUsername(target.value)}/>
           </div>
           <div>
-            password <input type="password" name="Password" value={formPassword} onChange={({ target }) => setFormPassword(target.value)}/>
+            password <input id="loginPassword" type="password" name="Password" value={formPassword} onChange={({ target }) => setFormPassword(target.value)}/>
           </div>
-          <button type="submit">login</button>
+          <button type="submit" id="loginSubmit">login</button>
         </form>
       </div>
     );

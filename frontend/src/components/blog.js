@@ -43,7 +43,7 @@ const info = ({ blog, toggleMoreInfo, setBlogLiked, deleteBlog }) => {
       <b>Likes:</b> {blog.likes}<br />
       <b>User:</b> {blog.user.name}
 
-      <button style={likeButtonStyle} onClick={likeBlog}>👍</button>
+      <button style={likeButtonStyle} onClick={likeBlog} className='likeButton'>👍</button>
 
       <br />
       <button style={deleteButtonStyle} onClick={deleteBlog}>delete blog?</button> <br />
@@ -81,7 +81,7 @@ const ListBlog = ({ blog, updateBlog, likeBlog }) => {
   };
 
   const drawMoreInfoButton = () => (
-    <button type="text" style={buttonStyle} onClick={toggleMoreInfo}>View</button>
+    <button type="text" style={buttonStyle} onClick={toggleMoreInfo} className='viewMoreButton'>View</button>
   );
 
   const deleteBlog = async () => {
@@ -94,7 +94,7 @@ const ListBlog = ({ blog, updateBlog, likeBlog }) => {
   };
 
   return(
-    <div style={divStyle}>
+    <div style={divStyle} className='singleBlogContainer'>
       <b>{blog.title}</b> by <i>{blog.author}</i> <br/>
 
       {
