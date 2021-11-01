@@ -105,6 +105,11 @@ function App() {
 
   };
 
+  const likeBlog = async (blog) => {
+    await blogServices.likeBlog(blog);
+    await updateBlog();
+  };
+
   const drawLoginPrompt = () => {
     return(
       <div id="loginPrompt">
@@ -131,7 +136,7 @@ function App() {
 
         {blogs.map(
           blog =>
-            <ListBlog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+            <ListBlog key={blog.id} blog={blog} updateBlog={updateBlog} likeBlog={likeBlog}/>
         )}
       </div>
     );
