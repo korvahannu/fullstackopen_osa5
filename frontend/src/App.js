@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import ListBlog from './components/blog.js';
 import blogServices from './services/blogs.js';
@@ -20,6 +20,8 @@ function App() {
 
   const [notification, setNotification] = useState('');
   const [warning, setWarning] = useState('');
+
+  const createNewBlogRef = useRef();
 
   useEffect( () => {
 
@@ -149,8 +151,10 @@ function App() {
     {
 
       await blogServices.create(newBlog);
+      await updateBlog();
 
-      updateBlog();
+      createNewBlogRef.current.toggleVisible();
+
       notify(`A new blog ${newBlog.title} by ${newBlog.author} has been added.`);
     }
     catch (error)
@@ -161,7 +165,7 @@ function App() {
   };
 
   const drawCreateNew = () => (
-    <Toggable labelShow='Add a new blog' labelHide='Cancel' key='toggableNewBlog'>
+    <Toggable labelShow='Add a new blog' labelHide='Cancel' key='toggableNewBlog' ref={createNewBlogRef}>
       <CreateNewBlog create={handleCreateBlog} key="createnewblog" />
     </Toggable>
   );
